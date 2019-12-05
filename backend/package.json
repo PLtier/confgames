@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "nodemon --no-deprecation bin/www.js",
+    "start": "node --no-deprecation bin/www.js",
     "sponsor-manager": "node --no-deprecation ./seed/manager.js"
   },
   "dependencies": {

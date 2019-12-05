@@ -18,7 +18,10 @@ import {
    REMOVE_COMPETITION_PARTICIPANT_REQUESTED, 
    USER_SIGNOUT_SUCCEDDED,
    USER_SIGNOUT_FAILED,
-   USER_SIGNOUT_REQUESTED} from './actions'
+   USER_SIGNOUT_REQUESTED,
+   SEND_MAIL_REQUESTED,
+   SEND_MAIL_SUCCEDDED,
+   SEND_MAIL_FAILED} from './actions'
 import { 
     SignInAction,
    ChangeCompetitionNameAction, 
@@ -26,7 +29,7 @@ import {
    EraseCompetitionAction, 
    AddCompetitionParticipantAction, 
    RemoveCompetitionParticipantAction, 
-   Action} from '../types'
+   SendMailAction} from '../types'
 
 import { call, put, takeLatest } from 'redux-saga/effects'
 import makeAction from './makeAction'
@@ -43,76 +46,87 @@ function* signIn(action: SignInAction) {
          username: action.payload.username
       }))
    } catch (e) {
-      yield put(makeAction(USER_SIGNIN_FAILED)({}))
+      yield put(makeAction(USER_SIGNIN_FAILED)())
    }
 }
-function* signOut(action: Action) {
+function* signOut() {
    try {
       discardToken()
 
-      yield put(makeAction(USER_SIGNOUT_SUCCEDDED)({}))
+      yield put(makeAction(USER_SIGNOUT_SUCCEDDED)())
    } catch (e) {
-      yield put(makeAction(USER_SIGNOUT_FAILED)({}))
+      yield put(makeAction(USER_SIGNOUT_FAILED)())
    }
 }
 
 function* fetchCompetitions() {
    try {
-      const { data } = yield call(competitionService.fetchCompetitions)
+      const { data, status } = yield call(competitionService.fetchCompetitions)
+      if(status === 401){
+         yield put(makeAction(USER_SIGNOUT_REQUESTED)())
+         throw Error('Invalid token')
+      }
       yield put(makeAction(FETCH_COMPETITIONS_SUCCEEDED)({
          competitions: data
       }))
    } catch (e) {
-      yield put(makeAction(FETCH_COMPETITIONS_FAILED)({}))
+      yield put(makeAction(FETCH_COMPETITIONS_FAILED)())
    }
 }
 function* createCompetition(action: CreateCompetitionAction) {
    try {
       yield call(competitionService.createCompetition, action.payload.competitionName)
-      yield put(makeAction(CREATE_COMPETITION_SUCCEEDED)({}))
-      yield put(makeAction(FETCH_COMPETITIONS_REQUESTED)({}))
+      yield put(makeAction(CREATE_COMPETITION_SUCCEEDED)())
+      yield put(makeAction(FETCH_COMPETITIONS_REQUESTED)())
    } catch (e) {
-      yield put(makeAction(CREATE_COMPETITION_FAILED)({}))
+      yield put(makeAction(CREATE_COMPETITION_FAILED)())
    }
 }
 function* changeCompetitionName(action: ChangeCompetitionNameAction) {
    try {
       yield call(competitionService.changeCompetitionName, action.payload.competitionID, action.payload.competitionName)
-      yield put(makeAction(CHANGE_COMPETITION_NAME_SUCCEEDED)({}))
-      yield put(makeAction(FETCH_COMPETITIONS_REQUESTED)({}))
+      yield put(makeAction(CHANGE_COMPETITION_NAME_SUCCEEDED)())
+      yield put(makeAction(FETCH_COMPETITIONS_REQUESTED)())
    } catch (e) {
-      yield put(makeAction(CHANGE_COMPETITION_NAME_FAILED)({}))
+      yield put(makeAction(CHANGE_COMPETITION_NAME_FAILED)())
    }
 }
 function* eraseCompetition(action: EraseCompetitionAction) {
    try {
       yield call(competitionService.eraseCompetition, action.payload.competitionID)
-      yield put(makeAction(ERASE_COMPETITION_SUCCEEDED)({}))
-      yield put(makeAction(FETCH_COMPETITIONS_REQUESTED)({}))
+      yield put(makeAction(ERASE_COMPETITION_SUCCEEDED)())
+      yield put(makeAction(FETCH_COMPETITIONS_REQUESTED)())
    } catch (e) {
-      yield put(makeAction(ERASE_COMPETITION_FAILED)({}))
+      yield put(makeAction(ERASE_COMPETITION_FAILED)())
    }
 }
 function* addCompetitionParticipant(action: AddCompetitionParticipantAction) {
    try {
       yield call(competitionService.addCompetitionParticipant, action.payload.competitionID, action.payload.user)
-      yield put(makeAction(ERASE_COMPETITION_SUCCEEDED)({}))
-      yield put(makeAction(FETCH_COMPETITIONS_REQUESTED)({}))
+      yield put(makeAction(ERASE_COMPETITION_SUCCEEDED)())
+      yield put(makeAction(FETCH_COMPETITIONS_REQUESTED)())
    } catch (e) {
-      yield put(makeAction(ERASE_COMPETITION_FAILED)({}))
+      yield put(makeAction(ERASE_COMPETITION_FAILED)())
    }
 }
 
 function* removeCompetitionParticipant(action: RemoveCompetitionParticipantAction) {
    try {
       yield call(competitionService.removeCompetitionParticipant, action.payload.competitionID, action.payload.participantID)
-      yield put(makeAction(ERASE_COMPETITION_SUCCEEDED)({}))
-      yield put(makeAction(FETCH_COMPETITIONS_REQUESTED)({}))
+      yield put(makeAction(ERASE_COMPETITION_SUCCEEDED)())
+      yield put(makeAction(FETCH_COMPETITIONS_REQUESTED)())
    } catch (e) {
-      yield put(makeAction(ERASE_COMPETITION_FAILED)({}))
+      yield put(makeAction(ERASE_COMPETITION_FAILED)())
    }
 }
-
+function* sendMailWithParticipants(action: SendMailAction) {
+   try {
+      yield call(competitionService.sendMailWithParticipants, action.payload.mail)
+      yield put(makeAction(SEND_MAIL_SUCCEDDED)())
+   } catch (e) {
+      yield put(makeAction(SEND_MAIL_FAILED)())
+   }
+}
 function* mySaga() {
   yield takeLatest(USER_SIGNIN_REQUESTED, signIn)
   yield takeLatest(FETCH_COMPETITIONS_REQUESTED, fetchCompetitions)
@@ -121,6 +135,7 @@ function* mySaga() {
   yield takeLatest(ERASE_COMPETITION_REQUESTED, eraseCompetition)
   yield takeLatest(ADD_COMPETITION_PARTICIPANT_REQUESTED, addCompetitionParticipant)
   yield takeLatest(REMOVE_COMPETITION_PARTICIPANT_REQUESTED, removeCompetitionParticipant)
+  yield takeLatest(SEND_MAIL_REQUESTED, sendMailWithParticipants)
   yield takeLatest(USER_SIGNOUT_REQUESTED, signOut)
 }
 

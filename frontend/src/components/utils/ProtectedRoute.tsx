@@ -1,22 +1,16 @@
-import React, { FunctionComponent, ElementType, ComponentClass } from 'react'
+import React, { FunctionComponent } from 'react'
 import { connect } from 'react-redux'
-import { RouteProps, Route, Redirect } from 'react-router-dom'
+import { Route, Redirect } from 'react-router-dom'
 
-interface ProtectedRouteProps extends RouteProps {
-    isAuthenticated: boolean;
-    protected?: boolean;
-    component: ComponentClass<any, any>;
-}
 
-const ProtectedRoute: FunctionComponent<ProtectedRouteProps> = ({ component, isAuthenticated, ...rest }) => {
-    const Page: ElementType = component
-    return (
-        <Route {...rest} render={(props) => (
-          isAuthenticated === true
-            ? <Page {...props} />
-            : <Redirect to='/signin' />
-        )} />
-    )
+// troubles with Routes component when trying to setup props
+
+const ProtectedRoute: FunctionComponent = ({component, isAuthenticated, path, ...rest}: any) => {
+    return <Route {...rest} render={(props) => (
+        isAuthenticated
+        ? React.createElement(component, props)
+        : <Redirect to="/" />
+      )} />
 }
 
 const mapStateToProps = (state: any) => ({

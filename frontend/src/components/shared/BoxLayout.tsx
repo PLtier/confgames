@@ -1,7 +1,5 @@
-import React, { FunctionComponent, ComponentProps } from 'react'
+import React, { FunctionComponent } from 'react'
 import styled from '@emotion/styled'
-import { Link } from 'react-router-dom'
-import { theme } from '../../theme'
 import { ButtonLink } from './Button'
 
 const Box = styled.div`

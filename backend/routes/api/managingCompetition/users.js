@@ -29,12 +29,12 @@ router
     .get((req, res) => {
         let {competition} = res.locals;
         let id = req.params.id;
-        res.json(competition.participants.find(x => x._id = id));
+        res.json(competition.participants.find(x => x._id ===id));
     })
     .delete((req, res) => {
         let {sponsor, competition} = res.locals;
         let id = req.params.id;
-        const index = competition.participants.findIndex(x => x._id = id)
+        const index = competition.participants.findIndex(x => x._id === id)
         let remove = competition.participants.splice(index, 1);
         sponsor.save();
         res.json({

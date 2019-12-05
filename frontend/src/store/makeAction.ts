@@ -1,7 +1,7 @@
 import { Action } from "../types"
 
-const makeAction = (type: any) => {
-    return (payload: any): Action => ({
+const makeAction = (type: string) => {
+    return (payload: any = {}): Action => ({
         type,
         payload
     })

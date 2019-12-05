@@ -1,15 +1,23 @@
-import React, { FunctionComponent, Props } from 'react';
+import React, { FunctionComponent } from 'react';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { RootState } from '../types';
 
-let isLoggedIn = false
+interface IndexPageProps {
+    isAuthenticated: boolean
+}
 
-const IndexPage: FunctionComponent = (props: any) => {
+const IndexPage: FunctionComponent<IndexPageProps> = (props) => {
 
-    if(isLoggedIn){
+    if(props.isAuthenticated){
         return <Redirect to="/dashboard" />
     }
 
     return <Redirect to="/signin" />
 }
 
-export default IndexPage;
+const mapStateToProps = (state: RootState) => ({
+    isAuthenticated: state.user.isAuthenticated
+})
+
+export default connect(mapStateToProps)(IndexPage)

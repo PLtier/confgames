@@ -1,13 +1,14 @@
-import React, { FunctionComponent, ComponentProps, useState } from 'react'
+import React, { FunctionComponent, useState } from 'react'
 import styled from '@emotion/styled'
 import { Input } from '../components/shared/Input'
 import Wave from '../components/graphics/Wave'
 import { ButtonLink, Button } from '../components/shared/Button'
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router'
+import { Redirect, RouteChildrenProps } from 'react-router'
 import makeAction from '../store/makeAction'
 import { ADD_COMPETITION_PARTICIPANT_REQUESTED } from '../store/actions'
 import useForm from 'react-hook-form'
+import { Competition } from '../types'
 
 const Box = styled.div`
     width:50%;
@@ -32,6 +33,7 @@ const PageWrapper = styled.div`
         left:0;
         width:100%;
         height:20vh;
+        z-index:-1;
     }
     .quit-btn{
         position: absolute;
@@ -39,13 +41,21 @@ const PageWrapper = styled.div`
         left:20px;
     }
 `
-const SignUpAttendees: FunctionComponent = (props: any) => {
+interface SignUpAttendeesProps extends RouteChildrenProps{
+    competitions: Competition[]
+    sponsorName: string
+    signUp: Function
+    match: any
+}
+
+const SignUpAttendees: FunctionComponent<SignUpAttendeesProps> = (props) => {
     const [submitted, setSubmitted] = useState(false)
     const { lotteryID } = props.match.params
-    const lottery = props.competitions.find((lottery: any) => lottery._id === lotteryID.trim())
-    // if(!lottery)
-    //     return <Redirect to="/" />
-    const { handleSubmit, register, errors } = useForm()
+    const lottery = props.competitions.find((lottery: Competition) => lottery._id === lotteryID.trim())
+    const { handleSubmit, register } = useForm()
+
+    if(!lottery)
+        return <Redirect to="/" />
 
     const onSubmit = (values: any) => {
         props.signUp({

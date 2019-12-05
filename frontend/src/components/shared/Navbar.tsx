@@ -1,8 +1,8 @@
 import React, { FunctionComponent } from 'react';
-import { Link, withRouter, RouterChildContext, RouteComponentProps } from 'react-router-dom';
+import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { theme } from '../../theme';
-import { Button, ButtonLink } from './Button';
+import { ButtonLink } from './Button';
 import { connect } from 'react-redux';
 import { RootState } from '../../types';
 

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ComponentProps } from 'react'
+import React, { FunctionComponent } from 'react'
 import styled from '@emotion/styled'
 import { ReactElementLike } from 'prop-types'
 

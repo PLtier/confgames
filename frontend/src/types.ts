@@ -99,6 +99,11 @@ export interface FetchCompetitonsSucceddedAction extends Action{
    }
 }
 
+export interface SendMailAction extends Action{
+   payload: {
+      mail: string
+   }
+}
 //theme 
 
 export type ThemeColor = 'primary' | 'secondary' | 'tertiary' | 'dark' | 'white' | 'danger'

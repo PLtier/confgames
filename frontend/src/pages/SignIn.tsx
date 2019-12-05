@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import makeAction from '../store/makeAction';
 import { USER_SIGNIN_REQUESTED } from '../store/actions';
 import useForm from 'react-hook-form'
+
 const Box = styled.div`
     width: 25%;
     margin: auto;
@@ -32,12 +33,14 @@ const PageWrapper = styled.div`
         height: 10vh;
     }
 `
-interface FormValues{
-    username: string;
-    password: string;
+interface SignInProps{
+    isAuthenticated: boolean
+    signInError: boolean
+    signIn: Function
 }
-const SignIn: FunctionComponent = (props: any) => {
-    const { handleSubmit, register, errors } = useForm();
+
+const SignIn: FunctionComponent<SignInProps> = (props) => {
+    const { handleSubmit, register } = useForm();
     const onSubmit = ({username, password}: any) => {
         props.signIn({
             username,
@@ -50,7 +53,7 @@ const SignIn: FunctionComponent = (props: any) => {
     return (
         <PageWrapper>
             <Box>
-                <img src={require('../assets/logo.png')} />
+                <img src={require('../assets/logo.png')} alt="ConFrontJS logo" />
                 <form onSubmit={handleSubmit(onSubmit)} >
                 <div className="form-input">
                     <label htmlFor="username-field">Login</label>

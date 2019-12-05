@@ -41,7 +41,14 @@ router.post("/", async (req, res) => {
           type: 'plain/csv'
       }]
     };
-    sgMail.send(msg).then(()=>res.send('mail has been sent')).catch(err=>res.send(err.toString()));
+    sgMail.send(msg)
+    .then(()=> res.json({
+      success: true,
+      message: 'mail has been sent'
+    })).catch(err => res.json({
+      success: false,
+      message: err.toString()
+    }))
 });
 
 module.exports = router;

@@ -21,7 +21,7 @@ app.use(cors());
 
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 //Routes
 app.use('/competitions', verifyResolveToken, resolveSponsor, manageCompetition); //ready
@@ -45,7 +45,11 @@ app.use(function(err, req, res) {
   res.status(err.status || 500);
 });
 
-
+if(process.env.NODE_ENV === 'production'){
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'))
+  })
+}
 
 //connect to db
 connectDB();

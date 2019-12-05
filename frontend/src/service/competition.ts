@@ -9,7 +9,7 @@ interface Participant{
     mail: string
 }
 
-export const fetchCompetitions = () => {
+export const fetchCompetitions = (): Promise<AxiosResponse<Competition[]>> => {
     return api.get('/allData', {
         ...withToken()
     })
@@ -23,7 +23,7 @@ export const createCompetition = (competitionName: string): Promise<AxiosRespons
     })
 }
 
-export const changeCompetitionName = (competitionID: string, competitionName: string): Promise<AxiosResponse<Competition[]>> => {
+export const changeCompetitionName = (competitionID: string, competitionName: string): Promise<AxiosResponse<ServerResponse>> => {
     return api.patch(`/competitions/${competitionID}`, {
         newCompetitionName: competitionName
     }, {
@@ -45,6 +45,14 @@ export const addCompetitionParticipant = (competitionID: string, participant: Pa
 
 export const removeCompetitionParticipant = (competitionID: string, participantID: string): Promise<AxiosResponse<ServerResponse>> => {
     return api.delete(`/competitions/${competitionID}/users/${participantID}`, {
+        ...withToken()
+    })
+}
+
+export const sendMailWithParticipants = (mail: string): Promise<AxiosResponse<ServerResponse>> => {
+    return api.post('/sendmail', {
+        mail
+    }, {
         ...withToken()
     })
 }

@@ -3,7 +3,8 @@ import styled from '@emotion/styled';
 import { ButtonLink } from '../components/shared/Button';
 import PageLayout from '../components/shared/PageLayout';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Redirect, RouteComponentProps } from 'react-router-dom';
+import { Competition } from '../types';
 
 const AttendeesTable = styled.table`
     td{
@@ -11,18 +12,15 @@ const AttendeesTable = styled.table`
         text-align:left;
     }
 `
-const attendees = [
-    {
-        email: 'example@exmaple.com',
-        name: 'John',
-        lastName: 'Smith',
-        date: new Date(2019, 11, 22, 11, 12, 13)
-    }
-]
-const Lottery: FunctionComponent = (props: any) => {
+interface LotteryProps extends RouteComponentProps{
+    competitions: Competition[]
+    match: any
+}
 
+const Lottery: FunctionComponent<LotteryProps> = (props) => {
     const { lotteryID } = props.match.params
-    const lottery = props.competitions.find((lottery: any) => lottery._id === lotteryID.trim())
+    const lottery = props.competitions.find((lottery: Competition) => lottery._id === lotteryID.trim())
+
     if(!lottery)
         return <Redirect to="/" />
 

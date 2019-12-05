@@ -12,32 +12,29 @@ import SignUpAttendees from './pages/SignUpAttendees'
 import SignOut from './pages/SignOut'
 import NewLottery from './pages/NewLottery'
 
-interface CustomRouteProps extends RouteProps{
-    protected?: boolean;
-}
-
-const routes: CustomRouteProps[] = [
+const unauthenticatedRoutes: RouteProps[] = [
     {
         path: '/',
         component: IndexPage,
         exact: true
     },
     {
+        path: '/signin',
+        component: SignIn,
+        exact: true
+    }
+]
+const authenticatedRoutes: RouteProps[] = [
+
+    {
         path: '/signout',
         component: SignOut,
         exact: true
     },
     {
-        path: '/signin',
-        component: SignIn,
-        exact: true,
-        protected: false
-    },
-    {
         path: '/dashboard',
         component: Dashboard,
         exact: true,
-        protected: true,
     },
     {
         path: '/new-lottery',
@@ -67,7 +64,11 @@ const Routing: FunctionComponent = () => {
     return (
         <Switch>
             {
-                routes.map(routeProps => <Route {...routeProps} />)
+                authenticatedRoutes.map(routeProps => <ProtectedRoute {...routeProps} />)
+            }
+
+            {
+                unauthenticatedRoutes.map(routeProps => <Route {...routeProps} />)
             }
         </Switch>
     )

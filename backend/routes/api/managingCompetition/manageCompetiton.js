@@ -26,7 +26,8 @@ router
     .delete((req, res) => {
         let {sponsor} = res.locals,
             {id} = req.params;
-        sponsor.competitions.find(x => x._id = id).remove();
+        console.log(id, sponsor.competitions)
+        sponsor.competitions.id(id).remove();
         sponsor.save();
         res.json({
             success: true,
@@ -37,7 +38,7 @@ router
         let {sponsor} = res.locals,
             {id} = req.params,
             {newCompetitionName} = req.body;
-            sponsor.competitions.find(x => x._id = id).competitionName = newCompetitionName;
+            sponsor.competitions.id(id).competitionName = newCompetitionName;
         sponsor.save();
         res.json({
             success: true,
@@ -51,7 +52,7 @@ router.use('/:id/users', (req,res,next)=>{
     let sponsor = req.sponsor,
         {id} = req.params;
     Sponsor.findOne(sponsor).then(sponsor=>{
-        res.locals.competition = sponsor.competitions.find(x => x._id = id)
+        res.locals.competition = sponsor.competitions.id(id)
         res.locals.sponsor = sponsor;
         next();
     });

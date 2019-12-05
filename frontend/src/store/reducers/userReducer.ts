@@ -1,6 +1,5 @@
 import { USER_SIGNIN_SUCCEEDED, USER_SIGNIN_FAILED, USER_SIGNOUT_SUCCEDDED } from "../actions"
 import { UserState, SignInAction } from "../../types"
-import { Action } from "redux"
 
 const initialState: UserState = {
   isAuthenticated: false,

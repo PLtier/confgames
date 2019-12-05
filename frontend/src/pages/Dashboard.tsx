@@ -32,7 +32,7 @@ interface DashboardProps extends RouteComponentProps{
 }
 
 const Dashboard: FunctionComponent<DashboardProps> = (props) => {
-
+    
     useEffect(() => {
         props.fetchCompetitions()
     }, [])
